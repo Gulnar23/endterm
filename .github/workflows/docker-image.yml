@@ -23,14 +23,8 @@ jobs:
        password: ${{secrets.DOCKER_PASSWORD}}
     - name: Push Docker image
       run: docker push your-dockerhub-username/your-image-name:latest
-    - name: SSH into EC2
-      uses: 220103099/ssh-action@v0.1.8 
-      with:
-       host: ${{secrets.EC2_PUBLICIP}}
-       username: ec2-user
-       key: ${{secrets.EC2_PRIVATEIP}}
-       script: | 
-        docker pull your-dockerhub-username/your-image-name:latest 
-        docker stop $(docker ps -q) || true
-        docker run -d -p 80:3000 your-dockerhub-username/your-image-name:latest
+    - name: SSH into EC2 
+      run: |
+       ssh -o StrictHostKeyChecking-no -i private-key.pem ec2-user@$
+       {{secrets.EC2_PUBLICIP}} echo "SSH connected"
        
